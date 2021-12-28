@@ -3,9 +3,15 @@ using Mango.Services.ProductApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .AddUserSecrets<Program>()
+    .Build();
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GetConnectionString()));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.RegisterRepositories();
 
@@ -30,13 +36,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-string GetConnectionString()
-{
-    var configurationRoot = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-    return configurationRoot.GetConnectionString(nameof(ApplicationDbContext));
-}
