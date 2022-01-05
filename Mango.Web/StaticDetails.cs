@@ -10,5 +10,6 @@ public static class StaticDetails
         DELETE
     }
 
-    public static string ProductApiBase { get; set; }
+    public static string? ProductApiBase { get; set; }
+    public static string? ShoppingCartApiBase { get; set; }
 }

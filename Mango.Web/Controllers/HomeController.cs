@@ -1,4 +1,5 @@
 using Mango.Web.Models;
+using Mango.Web.Services;
 using Mango.Web.Services.Contracts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IProductService _productService;
+    private readonly ICartService _cartService;
 
-    public HomeController(ILogger<HomeController> logger, IProductService productService)
+    public HomeController(ILogger<HomeController> logger, IProductService productService, ICartService cartService)
     {
         _logger = logger;
         _productService = productService;
+        _cartService = cartService;
     }
 
     public async Task<IActionResult> Index()
@@ -42,6 +45,43 @@ public class HomeController : Controller
         }
         
         return View(model);
+    }
+
+    [HttpPost]
+    //[ActionName("Details")]
+    [Authorize]
+    public async Task<IActionResult> Details(ProductDto productDto)
+    {
+        CartDto cartDto = new CartDto
+        {
+            Header = new CartHeaderDto
+            {
+                UserId = User.Claims.Where(user => user.Type == "sub")?.FirstOrDefault()?.Value
+            }
+        };
+
+        CartDetailDto cartDetailDto = new CartDetailDto
+        {
+            Count = productDto.Count,
+            ProductId = productDto.Id
+        };
+
+        var response = await _productService.GetProductByIdAsync<ResponseDto>(productDto.Id);
+        if (response is { IsSuccess: true })
+        {
+            cartDetailDto.Product = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+        }
+        List<CartDetailDto> cartDetails = new() { cartDetailDto };
+        cartDto.Details = cartDetails;
+
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        var addedToCartResponse = await _cartService.AddToCartAsync<ResponseDto>(cartDto, accessToken);
+        if (addedToCartResponse is { IsSuccess: true })
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(productDto);
     }
 
     [Authorize]
