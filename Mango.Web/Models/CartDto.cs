@@ -2,7 +2,13 @@
 {
     public class CartDto
     {
-        public CartHeaderDto Header { get; set; } = null!;
-        public IEnumerable<CartDetailDto> Details { get; set; } = null!;
+        public CartDto()
+        {
+            Header = new CartHeaderDto();
+            Details = new List<CartDetailDto>();
+        }
+
+        public CartHeaderDto Header { get; set; }
+        public IEnumerable<CartDetailDto> Details { get; set; }
     }
 }

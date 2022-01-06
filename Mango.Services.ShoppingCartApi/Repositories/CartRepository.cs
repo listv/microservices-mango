@@ -113,6 +113,40 @@ public class CartRepository : ICartRepository
         }
     }
 
+    public async Task<bool> ApplyCoupon(string userId, string couponCode)
+    {
+        try
+        {
+            var cartHeaderFromDb = await _db.CartHeaders.FirstOrDefaultAsync(header => header.UserId == userId);
+            cartHeaderFromDb.CouponCode = couponCode;
+            _db.CartHeaders.Update(cartHeaderFromDb);
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveCoupon(string userId)
+    {
+        try
+        {
+            var cartHeaderFromDb = await _db.CartHeaders.FirstOrDefaultAsync(header => header.UserId == userId);
+            cartHeaderFromDb.CouponCode = string.Empty;
+            _db.CartHeaders.Update(cartHeaderFromDb);
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
     public async Task<bool> ClearCart(string userId)
     {
         var cartHeaderFromDb = await _db.CartHeaders.FirstOrDefaultAsync(header => header.UserId==userId);

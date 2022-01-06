@@ -13,6 +13,7 @@ var configuration = new ConfigurationBuilder()
 
 StaticDetails.ProductApiBase = configuration["ServiceUrls:ProductApi"];
 StaticDetails.ShoppingCartApiBase = configuration["ServiceUrls:ShoppingCartApi"];
+StaticDetails.CouponApiBase = configuration["ServiceUrls:CouponApi"];
 
 builder.Services.RegisterHttpClients();
 builder.Services.RegisterServices();

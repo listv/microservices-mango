@@ -2,7 +2,7 @@ using Mango.Web.Models;
 
 namespace Mango.Web.Services.Contracts;
 
-public interface IProductService : IBaseService
+public interface IProductService
 {
     Task<T> GetAllProductsAsync<T>(string? token = null);
     Task<T> GetProductByIdAsync<T>(int id, string? token = null);

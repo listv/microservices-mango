@@ -4,7 +4,7 @@ using Mango.Services.ShoppingCartApi.Models.Dto;
 
 namespace Mango.Services.ShoppingCartApi;
 
-public class MappingProfile:Profile
+public class MappingProfile : Profile
 {
     public MappingProfile()
     {

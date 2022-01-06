@@ -9,13 +9,15 @@ namespace Mango.Web.Models
         {
             return services
                 .AddScoped<IProductService, ProductService>()
-                .AddScoped<ICartService, CartService>();
+                .AddScoped<ICartService, CartService>()
+                .AddScoped<ICouponService, CouponService>();
         }
 
         public static IServiceCollection RegisterHttpClients(this IServiceCollection services)
         {
             services.AddHttpClient<IProductService, ProductService>();
             services.AddHttpClient<ICartService, CartService>();
+            services.AddHttpClient<ICouponService, CouponService>();
 
             return services;
         }
