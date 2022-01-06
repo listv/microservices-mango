@@ -17,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.RegisterRepositories();
+builder.Services.RegisterServices();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication("Bearer")
