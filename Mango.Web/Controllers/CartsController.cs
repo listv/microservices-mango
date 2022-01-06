@@ -63,6 +63,26 @@ public class CartsController : Controller
         return View(await LoadCartBasedOnLoggedInUser());
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Checkout(CartDto cartDto)
+    {
+        try
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            await _cartService.Checkout<ResponseDto>(cartDto.Header, accessToken);
+            return RedirectToAction(nameof(Confirmation));
+        }
+        catch (Exception ex)
+        {
+            return View(cartDto);
+        }
+    }
+
+    public Task<IActionResult> Confirmation()
+    {
+        return Task.FromResult<IActionResult>(View());
+    }
+
     public async Task<IActionResult> Remove(int cartDetailsId)
     {
         var accessToken = await HttpContext.GetTokenAsync("access_token");
