@@ -13,10 +13,15 @@ public class AzureServiceBusMessageBus : IMessageBus
     public async Task PublishMessage(BaseMessage message, string topicName)
     {
         await using var serviceBusClient = new ServiceBusClient(connectionString);
+        var sender = serviceBusClient.CreateSender(topicName);
+        
         var jsonMessage = JsonConvert.SerializeObject(message);
         var finalMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(jsonMessage))
-            { CorrelationId = Guid.NewGuid().ToString() };
-        var sender = serviceBusClient.CreateSender(topicName);
+        {
+            CorrelationId = Guid.NewGuid().ToString() 
+            
+        };
+        
         await sender.SendMessageAsync(finalMessage);
         await sender.CloseAsync();
     }
