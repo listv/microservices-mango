@@ -1,4 +1,5 @@
 using Mango.Web;
+using Mango.Web.Extensions;
 using Mango.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 

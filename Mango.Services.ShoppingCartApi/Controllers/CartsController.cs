@@ -11,13 +11,15 @@ namespace Mango.Services.ShoppingCartApi.Controllers;
 public class CartsController : Controller
 {
     private readonly ICartRepository _cartRepository;
+    private readonly ICouponRepository _couponRepository;
     private readonly IMessageBus _messageBus;
     protected ResponseDto _response;
 
-    public CartsController(ICartRepository cartRepository, IMessageBus messageBus)
+    public CartsController(ICartRepository cartRepository, IMessageBus messageBus, ICouponRepository couponRepository)
     {
         _cartRepository = cartRepository;
         _messageBus = messageBus;
+        _couponRepository = couponRepository;
         _response = new ResponseDto();
     }
 
@@ -26,7 +28,7 @@ public class CartsController : Controller
     {
         try
         {
-            CartDto cartDto = await _cartRepository.GetCartByUserId(userId);
+            var cartDto = await _cartRepository.GetCartByUserId(userId);
             _response.Result = cartDto;
         }
         catch (Exception ex)
@@ -43,7 +45,7 @@ public class CartsController : Controller
     {
         try
         {
-            CartDto cart = await _cartRepository.CreateUpdateCart(cartDto);
+            var cart = await _cartRepository.CreateUpdateCart(cartDto);
             _response.Result = cart;
         }
         catch (Exception ex)
@@ -60,7 +62,7 @@ public class CartsController : Controller
     {
         try
         {
-            CartDto cart = await _cartRepository.CreateUpdateCart(cartDto);
+            var cart = await _cartRepository.CreateUpdateCart(cartDto);
             _response.Result = cart;
         }
         catch (Exception ex)
@@ -73,11 +75,11 @@ public class CartsController : Controller
     }
 
     [HttpDelete("RemoveCart/{id}")]
-    public async Task<object> Remove([FromRoute(Name ="id")]int cartId)
+    public async Task<object> Remove([FromRoute(Name = "id")] int cartId)
     {
         try
         {
-            bool isSuccess = await _cartRepository.RemoveFromCart(cartId);
+            var isSuccess = await _cartRepository.RemoveFromCart(cartId);
             _response.Result = isSuccess;
         }
         catch (Exception ex)
@@ -88,13 +90,13 @@ public class CartsController : Controller
 
         return _response;
     }
-    
+
     [HttpPost("ApplyCoupon")]
-    public async Task<object> ApplyCoupon([FromBody]CartDto cartDto)
+    public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
     {
         try
         {
-            bool isSuccess = await _cartRepository.ApplyCoupon(cartDto.Header.UserId, cartDto.Header.CouponCode);
+            var isSuccess = await _cartRepository.ApplyCoupon(cartDto.Header.UserId, cartDto.Header.CouponCode);
             _response.Result = isSuccess;
         }
         catch (Exception ex)
@@ -105,13 +107,13 @@ public class CartsController : Controller
 
         return _response;
     }
-    
+
     [HttpPost("RemoveCoupon")]
-    public async Task<object> RemoveCoupon([FromBody]string userId)
+    public async Task<object> RemoveCoupon([FromBody] string userId)
     {
         try
         {
-            bool isSuccess = await _cartRepository.RemoveCoupon(userId);
+            var isSuccess = await _cartRepository.RemoveCoupon(userId);
             _response.Result = isSuccess;
         }
         catch (Exception ex)
@@ -129,12 +131,22 @@ public class CartsController : Controller
         try
         {
             var cartDto = await _cartRepository.GetCartByUserId(checkoutHeader.UserId);
-            if (cartDto==null)
+            if (cartDto == null) return BadRequest();
+
+            if (!string.IsNullOrWhiteSpace(checkoutHeader.CouponCode))
             {
-                return BadRequest();
+                var coupon = await _couponRepository.GetCoupon(checkoutHeader.CouponCode);
+                if (Math.Abs(checkoutHeader.DiscountTotal - coupon.DiscountAmount) > 0.009)
+                {
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages = new List<string> { "Coupon Price has changed, please confirm" };
+                    _response.DisplayMessage = "Coupon Price has changed, please confirm";
+                    _response.Result = false;
+                    return _response;
+                }
             }
 
-            checkoutHeader.CartDetails = cartDto.Details; 
+            checkoutHeader.CartDetails = cartDto.Details;
             // logic to add message to process order.
             await _messageBus.PublishMessage(checkoutHeader, "checkoutmessagetopic");
             _response.Result = true;

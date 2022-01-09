@@ -40,7 +40,7 @@ public class CartsController : Controller
             if (!string.IsNullOrWhiteSpace(cartDto.Header.CouponCode))
             {
                 var couponFromApi = await _couponService.GetCoupon<ResponseDto>(cartDto.Header.CouponCode, accessToken);
-                if (response is {IsSuccess:true})
+                if (response is { IsSuccess: true })
                 {
                     var coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(couponFromApi.Result));
                     cartDto.Header.DiscountTotal = coupon.DiscountAmount;
@@ -48,9 +48,7 @@ public class CartsController : Controller
             }
 
             foreach (var cartDtoDetail in cartDto.Details)
-            {
                 cartDto.Header.OrderTotal += cartDtoDetail.Product.Price * cartDtoDetail.Count;
-            }
 
             cartDto.Header.OrderTotal -= cartDto.Header.DiscountTotal;
         }
@@ -69,7 +67,13 @@ public class CartsController : Controller
         try
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            await _cartService.Checkout<ResponseDto>(cartDto.Header, accessToken);
+            var response = await _cartService.Checkout<ResponseDto>(cartDto.Header, accessToken);
+            if (response is not { IsSuccess: true })
+            {
+                TempData["Error"] = response.DisplayMessage;
+                return RedirectToAction(nameof(Checkout));
+            }
+
             return RedirectToAction(nameof(Confirmation));
         }
         catch (Exception ex)
@@ -101,9 +105,9 @@ public class CartsController : Controller
 
         if (response is { IsSuccess: true }) return RedirectToAction(nameof(Index));
 
-        return View();   
+        return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
     {
@@ -112,6 +116,6 @@ public class CartsController : Controller
 
         if (response is { IsSuccess: true }) return RedirectToAction(nameof(Index));
 
-        return View();   
+        return View();
     }
 }
