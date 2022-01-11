@@ -20,6 +20,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.MessageBus", "Mango.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.Services.OrderApi", "Mango.Services.OrderApi\Mango.Services.OrderApi.csproj", "{E4C4E80C-5BC7-4653-B7EF-04C35FA1F2C6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payments", "Payments", "{F60A12C1-0BF6-46D3-9A9A-B766D4724962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.Integration.Payments.PaymentProcessor", "Mango.Integration.Payments.PaymentProcessor\Mango.Integration.Payments.PaymentProcessor.csproj", "{E917BB90-B399-49AC-92FD-769B2D62DB53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.Services.PaymentApi", "Mango.Services.PaymentApi\Mango.Services.PaymentApi.csproj", "{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +39,9 @@ Global
 		{465BBF61-D6DA-43FB-8623-32555764299E} = {D49AFB40-63B0-4B12-86A3-B1DC86313726}
 		{DC36CDB5-9DD4-44C4-907C-C67B3E51F233} = {4396C4CF-374C-4BEF-A3A9-76A599A07D7B}
 		{E4C4E80C-5BC7-4653-B7EF-04C35FA1F2C6} = {D49AFB40-63B0-4B12-86A3-B1DC86313726}
+		{F60A12C1-0BF6-46D3-9A9A-B766D4724962} = {4396C4CF-374C-4BEF-A3A9-76A599A07D7B}
+		{E917BB90-B399-49AC-92FD-769B2D62DB53} = {F60A12C1-0BF6-46D3-9A9A-B766D4724962}
+		{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13} = {D49AFB40-63B0-4B12-86A3-B1DC86313726}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B03EEE76-C116-410F-9F65-1C36DA982719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -63,5 +72,13 @@ Global
 		{E4C4E80C-5BC7-4653-B7EF-04C35FA1F2C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4C4E80C-5BC7-4653-B7EF-04C35FA1F2C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4C4E80C-5BC7-4653-B7EF-04C35FA1F2C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E917BB90-B399-49AC-92FD-769B2D62DB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E917BB90-B399-49AC-92FD-769B2D62DB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E917BB90-B399-49AC-92FD-769B2D62DB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E917BB90-B399-49AC-92FD-769B2D62DB53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B0C324D-8FB6-44CA-A612-6E8FEF30EC13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

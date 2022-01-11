@@ -1,3 +1,4 @@
+using Mango.MessageBus;
 using Mango.Services.OrderApi.DbContexts;
 using Mango.Services.OrderApi.Extensions;
 using Mango.Services.OrderApi.Messaging;
@@ -25,6 +26,7 @@ optionsBuilder.UseSqlServer(configuration.GetConnectionString(nameof(Application
 builder.Services.AddSingleton(new OrderRepository(optionsBuilder.Options));
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+builder.Services.AddSingleton<IMessageBus, AzureServiceBusMessageBus>();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication("Bearer")
@@ -50,7 +52,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo{Title = "Mango.Services.CouponApi", Version = "v1"});
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Mango.Services.OrderApi", Version = "v1" });
     options.EnableAnnotations();
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

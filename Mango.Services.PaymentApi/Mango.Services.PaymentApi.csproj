@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>3598caf7-93e3-4f16-ac93-4d3ace997c3d</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Controllers"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Mango.Integration.Payments.PaymentProcessor\Mango.Integration.Payments.PaymentProcessor.csproj"/>
+        <ProjectReference Include="..\Mango.MessageBus\Mango.MessageBus.csproj"/>
+    </ItemGroup>
+
+</Project>
