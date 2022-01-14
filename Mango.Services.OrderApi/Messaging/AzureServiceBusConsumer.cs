@@ -11,13 +11,12 @@ namespace Mango.Services.OrderApi.Messaging;
 
 public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 {
+    private readonly ServiceBusProcessor _checkoutProcessor;
+    private readonly IMessageBus _messageBus;
     private readonly string _orderPaymentProcessTopic;
     private readonly string _orderPaymentResultUpdateTopic;
 
     private readonly OrderRepository _orderRepository;
-    private readonly IMessageBus _messageBus;
-
-    private readonly ServiceBusProcessor _checkoutProcessor;
     private readonly ServiceBusProcessor _orderUpdatePaymentStatusProcessor;
 
     public AzureServiceBusConsumer(OrderRepository orderRepository,
@@ -51,6 +50,15 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         await _orderUpdatePaymentStatusProcessor.StartProcessingAsync();
     }
 
+    public async Task Stop()
+    {
+        await _checkoutProcessor.StopProcessingAsync();
+        await _checkoutProcessor.DisposeAsync();
+
+        await _orderUpdatePaymentStatusProcessor.StopProcessingAsync();
+        await _orderUpdatePaymentStatusProcessor.DisposeAsync();
+    }
+
     private async Task OnOrderPaymentUpdateReceived(ProcessMessageEventArgs args)
     {
         var message = args.Message;
@@ -59,15 +67,6 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 
         await _orderRepository.UpdateOrderPaymentStatus(paymentResultMessage.OrderId, paymentResultMessage.Status);
         await args.CompleteMessageAsync(args.Message);
-    }
-
-    public async Task Stop()
-    {
-        await _checkoutProcessor.StopProcessingAsync();
-        await _checkoutProcessor.DisposeAsync();
-
-        await _orderUpdatePaymentStatusProcessor.StopProcessingAsync();
-        await _orderUpdatePaymentStatusProcessor.DisposeAsync();
     }
 
     private Task ErrorHandler(ProcessErrorEventArgs args)
@@ -124,7 +123,8 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
             CVV = orderHeader.CVV,
             ExpiryMonthYear = orderHeader.ExpiryMonthYear,
             OrderId = orderHeader.Id,
-            OrderTotal = orderHeader.OrderTotal
+            OrderTotal = orderHeader.OrderTotal,
+            Email = orderHeader.Email
         };
 
         try

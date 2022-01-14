@@ -10,11 +10,10 @@ namespace Mango.Services.PaymentApi.Messaging;
 
 public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 {
-    private readonly string _orderPaymentResultUpdateTopic;
-
     private readonly IMessageBus _messageBus;
-    private readonly IProcessPayment _processPayment;
     private readonly ServiceBusProcessor _orderPaymentProcessor;
+    private readonly string _orderPaymentResultUpdateTopic;
+    private readonly IProcessPayment _processPayment;
 
     public AzureServiceBusConsumer(IConfiguration configuration, IMessageBus messageBus, IProcessPayment processPayment)
     {
@@ -61,7 +60,8 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         var updatePaymentResultMessage = new UpdatePaymentResultMessage
         {
             Status = result,
-            OrderId = paymentRequestMessage.OrderId
+            OrderId = paymentRequestMessage.OrderId,
+            Email = paymentRequestMessage.Email
         };
 
         try
